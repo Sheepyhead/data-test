@@ -17,8 +17,10 @@
 
 use bevy::{prelude::*, window::PresentMode};
 use debug::Debug;
+use tiles::Tiles;
 
 mod debug;
+mod tiles;
 
 pub const CLEAR: Color = Color::BLACK;
 pub const HEIGHT: f32 = 600.0;
@@ -35,10 +37,15 @@ fn main() {
             resizable: false,
             ..Default::default()
         })
+        .insert_resource(AmbientLight {
+            color: Color::WHITE,
+            brightness: 0.4,
+        })
         // External plugins
         .add_plugins(DefaultPlugins)
         // Internal plugins
         .add_plugin(Debug)
+        .add_plugin(Tiles)
         .add_startup_system(spawn_camera)
         .run();
 }
@@ -46,7 +53,7 @@ fn main() {
 fn spawn_camera(mut commands: Commands) {
     let mut camera = Camera3dBundle::default();
 
-    camera.transform.translation = Vec3::splat(0.0);
+    camera.transform.translation = Vec3::splat(10.0);
     camera.transform.look_at(Vec3::ZERO, Vec3::Y);
 
     commands.spawn_bundle(camera);

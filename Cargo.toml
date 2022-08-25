@@ -8,6 +8,8 @@ edition = "2021"
 [dependencies]
 bevy = "0.8"
 bevy-inspector-egui = "0.12"
+bevy_common_assets = {version = "0.3.0", features = ["yaml"]}
+serde = { version = "1", features = ["derive"] }
 
 [profile.dev]
 opt-level = 1

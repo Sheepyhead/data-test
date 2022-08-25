@@ -41,7 +41,14 @@ fn spawn(
         if let AssetEvent::Created { handle } = ev {
             let tile = tiles.get(handle).unwrap();
             commands
-                .spawn_bundle(SpatialBundle::default())
+                .spawn_bundle(SpatialBundle {
+                    transform: Transform::from_xyz(
+                        *tile.position.get("x").unwrap() as f32,
+                        0.0,
+                        *tile.position.get("y").unwrap() as f32,
+                    ),
+                    ..default()
+                })
                 .insert(SpawnGltfScene(ass.load(&tile.model)));
         }
     }

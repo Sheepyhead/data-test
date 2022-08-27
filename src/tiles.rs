@@ -1,5 +1,7 @@
-use bevy::{gltf::Gltf, prelude::*, reflect::TypeUuid};
+use bevy::{prelude::*, reflect::TypeUuid};
 use bevy_common_assets::yaml::YamlAssetPlugin;
+
+use crate::gltf::SpawnGltfScene;
 
 pub struct Tiles;
 
@@ -7,8 +9,7 @@ impl Plugin for Tiles {
     fn build(&self, app: &mut App) {
         app.add_plugin(YamlAssetPlugin::<RepeatingTileSet>::new(&["tileset"]))
             .add_startup_system(load)
-            .add_system(spawn_tileset)
-            .add_system(spawn_gltf);
+            .add_system(spawn_tileset);
     }
 }
 struct TileSets(Vec<Handle<RepeatingTileSet>>);
@@ -18,23 +19,6 @@ fn load(mut commands: Commands, ass: Res<AssetServer>) {
     commands.insert_resource(TileSets(vec![grass_set]));
 }
 
-#[derive(Component, Deref)]
-struct SpawnGltfScene(Handle<Gltf>);
-
-fn spawn_gltf(
-    mut commands: Commands,
-    scenes: Query<(Entity, &SpawnGltfScene)>,
-    gltfs: Res<Assets<Gltf>>,
-) {
-    for (entity, SpawnGltfScene(handle)) in scenes.iter() {
-        if let Some(gltf) = gltfs.get(handle) {
-            commands
-                .entity(entity)
-                .insert(gltf.scenes[0].clone())
-                .remove::<SpawnGltfScene>();
-        }
-    }
-}
 
 #[derive(serde::Deserialize, TypeUuid)]
 #[uuid = "688ebe3a-8d7f-4658-b945-f408c1370ba8"]
@@ -75,10 +59,4 @@ struct TileBundle {
     #[bundle]
     spatial: SpatialBundle,
     scene: SpawnGltfScene,
-}
-
-impl From<Handle<Gltf>> for SpawnGltfScene {
-    fn from(handle: Handle<Gltf>) -> Self {
-        Self(handle)
-    }
 }

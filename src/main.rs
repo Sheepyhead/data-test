@@ -17,9 +17,13 @@
 
 use bevy::{prelude::*, window::PresentMode};
 use debug::Debug;
+use gltf::GltfPlugin;
+use player::PlayerPlugin;
 use tiles::Tiles;
 
 mod debug;
+mod gltf;
+mod player;
 mod tiles;
 
 pub const CLEAR: Color = Color::BLACK;
@@ -39,13 +43,15 @@ fn main() {
         })
         .insert_resource(AmbientLight {
             color: Color::WHITE,
-            brightness: 0.4,
+            brightness: 0.7,
         })
         // External plugins
         .add_plugins(DefaultPlugins)
         // Internal plugins
         .add_plugin(Debug)
+        .add_plugin(PlayerPlugin)
         .add_plugin(Tiles)
+        .add_plugin(GltfPlugin)
         .add_startup_system(spawn_camera)
         .run();
 }

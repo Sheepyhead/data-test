@@ -9,7 +9,8 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugin(YamlAssetPlugin::<PlayerData>::new(&["player"]))
             .add_startup_system(load)
-            .add_system(spawn);
+            .add_system(spawn)
+            .add_system(initial_animate_character);
     }
 }
 
@@ -33,7 +34,29 @@ fn spawn(
             commands.spawn_bundle(PlayerBundle {
                 spatial: default(),
                 scene: ass.load(&data.model).into(),
+                animations: CharacterAnimations {
+                    idle: ass.load(&format!("{}#Animation0", data.idle_animation)),
+                },
             });
+        }
+    }
+}
+
+fn initial_animate_character(
+    mut players: Query<(&Parent, &mut AnimationPlayer), Added<AnimationPlayer>>,
+    parents: Query<&Parent, Without<AnimationPlayer>>,
+    animations: Query<&CharacterAnimations, Without<AnimationPlayer>>,
+) {
+    for (mut parent, mut player) in players.iter_mut() {
+        loop {
+            if let Ok(animations) = animations.get(parent.get()) {
+                player.play(animations.idle.clone()).repeat();
+                break;
+            } else if let Ok(new_parent) = parents.get(parent.get()) {
+                parent = new_parent;
+            } else {
+                break;
+            }
         }
     }
 }
@@ -42,6 +65,7 @@ fn spawn(
 #[uuid = "a3b4779e-4090-434d-bf69-0ed5b3068e76"]
 struct PlayerData {
     model: String,
+    idle_animation: String,
 }
 
 #[derive(Bundle)]
@@ -49,4 +73,10 @@ struct PlayerBundle {
     #[bundle]
     spatial: SpatialBundle,
     scene: SpawnGltfScene,
+    animations: CharacterAnimations,
+}
+
+#[derive(Component)]
+struct CharacterAnimations {
+    idle: Handle<AnimationClip>,
 }

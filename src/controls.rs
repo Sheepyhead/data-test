@@ -3,7 +3,10 @@ use std::{f32::consts::PI, time::Duration};
 use bevy::{math::Vec4Swizzles, prelude::*};
 use bevy_tweening::{lens::TransformRotationLens, Animator, EaseFunction, Tween};
 
-use crate::{custom_meshes::Pyramid, physics::UnderCursor, tiles::Terrain};
+use crate::{
+    custom_meshes::Pyramid, movement::Destination, physics::UnderCursor, player::Player,
+    tiles::Terrain,
+};
 
 pub struct Controls;
 
@@ -20,6 +23,7 @@ fn click_ground(
     input: Res<Input<MouseButton>>,
     under_cursor: Res<UnderCursor>,
     ground: Query<(), With<Terrain>>,
+    player: Query<Entity, With<Player>>,
     indicators: Query<Entity, With<PlayerDestinationIndicator>>,
 ) {
     if input.pressed(MouseButton::Left) {
@@ -35,7 +39,7 @@ fn click_ground(
                     .with_rotation(Quat::from_rotation_x(PI));
             let angles = transform.rotation.to_euler(EulerRot::XYZ);
             let end_rotation = Quat::from_euler(EulerRot::XYZ, angles.0, angles.1 + PI, angles.2);
-            commands
+            let destination = commands
                 .spawn_bundle(PbrBundle {
                     mesh: meshes.add(
                         Pyramid {
@@ -59,9 +63,14 @@ fn click_ground(
                         },
                     )),
                     PlayerDestinationIndicator,
-                ));
+                ))
+                .id();
 
-                indicators.iter().for_each(|entity| commands.entity(entity).despawn_recursive());
+            indicators
+                .iter()
+                .for_each(|entity| commands.entity(entity).despawn_recursive());
+
+            commands.entity(player.single()).insert(Destination(destination));
         }
     }
 }

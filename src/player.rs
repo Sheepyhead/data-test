@@ -34,7 +34,7 @@ fn spawn(
             commands.entity(entity).despawn_recursive();
             commands.spawn_bundle(PlayerBundle {
                 spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 1.0, 0.0),
+                    transform: Transform::from_xyz(0.0, 1.1, 0.0),
                     ..default()
                 },
                 scene: ass.load(&data.model).into(),
@@ -44,8 +44,8 @@ fn spawn(
                 collider: Collider::cylinder(1.0, 0.5),
                 rb: RigidBody::Dynamic,
                 la: LockedAxes::TRANSLATION_LOCKED_Y
-                    | LockedAxes::ROTATION_LOCKED_X
-                    | LockedAxes::ROTATION_LOCKED_Z,
+                    | LockedAxes::ROTATION_LOCKED,
+                player: Player,
             });
         }
     }
@@ -86,9 +86,13 @@ struct PlayerBundle {
     collider: Collider,
     rb: RigidBody,
     la: LockedAxes,
+    player: Player,
 }
 
 #[derive(Component)]
 struct CharacterAnimations {
     idle: Handle<AnimationClip>,
 }
+
+#[derive(Component)]
+pub struct Player;

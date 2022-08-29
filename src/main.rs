@@ -20,6 +20,7 @@ use bevy_tweening::TweeningPlugin;
 use controls::Controls;
 use debug::Debug;
 use gltf::GltfPlugin;
+use movement::Movement;
 use physics::Physics;
 use player::PlayerPlugin;
 use tiles::Tiles;
@@ -29,6 +30,7 @@ mod controls;
 mod custom_meshes;
 mod debug;
 mod gltf;
+mod movement;
 mod physics;
 mod player;
 mod tiles;
@@ -58,6 +60,7 @@ fn main() {
         // Internal plugins
         .add_plugin(Controls)
         .add_plugin(Debug)
+        .add_plugin(Movement)
         .add_plugin(Physics)
         .add_plugin(PlayerPlugin)
         .add_plugin(Tiles)

@@ -16,13 +16,20 @@
 )]
 
 use bevy::{prelude::*, window::PresentMode};
+use bevy_tweening::TweeningPlugin;
+use controls::Controls;
 use debug::Debug;
 use gltf::GltfPlugin;
+use physics::Physics;
 use player::PlayerPlugin;
 use tiles::Tiles;
 
+mod common;
+mod controls;
+mod custom_meshes;
 mod debug;
 mod gltf;
+mod physics;
 mod player;
 mod tiles;
 
@@ -47,8 +54,11 @@ fn main() {
         })
         // External plugins
         .add_plugins(DefaultPlugins)
+        .add_plugin(TweeningPlugin)
         // Internal plugins
+        .add_plugin(Controls)
         .add_plugin(Debug)
+        .add_plugin(Physics)
         .add_plugin(PlayerPlugin)
         .add_plugin(Tiles)
         .add_plugin(GltfPlugin)

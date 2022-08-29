@@ -1,5 +1,6 @@
 use bevy::{prelude::*, reflect::TypeUuid};
 use bevy_common_assets::yaml::YamlAssetPlugin;
+use bevy_rapier3d::prelude::*;
 
 use crate::gltf::SpawnGltfScene;
 
@@ -32,11 +33,19 @@ fn spawn(
         if let Some(data) = data.get(&**spawn) {
             commands.entity(entity).despawn_recursive();
             commands.spawn_bundle(PlayerBundle {
-                spatial: default(),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 1.0, 0.0),
+                    ..default()
+                },
                 scene: ass.load(&data.model).into(),
                 animations: CharacterAnimations {
                     idle: ass.load(&format!("{}#Animation0", data.idle_animation)),
                 },
+                collider: Collider::cylinder(1.0, 0.5),
+                rb: RigidBody::Dynamic,
+                la: LockedAxes::TRANSLATION_LOCKED_Y
+                    | LockedAxes::ROTATION_LOCKED_X
+                    | LockedAxes::ROTATION_LOCKED_Z,
             });
         }
     }
@@ -74,6 +83,9 @@ struct PlayerBundle {
     spatial: SpatialBundle,
     scene: SpawnGltfScene,
     animations: CharacterAnimations,
+    collider: Collider,
+    rb: RigidBody,
+    la: LockedAxes,
 }
 
 #[derive(Component)]

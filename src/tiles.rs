@@ -1,5 +1,6 @@
 use bevy::{prelude::*, reflect::TypeUuid};
 use bevy_common_assets::yaml::YamlAssetPlugin;
+use bevy_rapier3d::prelude::*;
 
 use crate::gltf::SpawnGltfScene;
 
@@ -18,7 +19,6 @@ fn load(mut commands: Commands, ass: Res<AssetServer>) {
     let grass_set = ass.load("grass.tileset");
     commands.insert_resource(TileSets(vec![grass_set]));
 }
-
 
 #[derive(serde::Deserialize, TypeUuid)]
 #[uuid = "688ebe3a-8d7f-4658-b945-f408c1370ba8"]
@@ -46,6 +46,9 @@ fn spawn_tileset(
                             ..default()
                         },
                         scene: ass.load(&set.model).into(),
+                        terrain: Terrain,
+                        collider: Collider::cuboid(1.0, 0.1, 1.0),
+                        rb: RigidBody::Fixed,
                     });
                 }
             }
@@ -59,4 +62,10 @@ struct TileBundle {
     #[bundle]
     spatial: SpatialBundle,
     scene: SpawnGltfScene,
+    terrain: Terrain,
+    collider: Collider,
+    rb: RigidBody,
 }
+
+#[derive(Component)]
+pub struct Terrain;

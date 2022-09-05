@@ -15,7 +15,10 @@
     clippy::enum_glob_use
 )]
 
-use bevy::{prelude::*, window::PresentMode};
+use bevy::{
+    prelude::*,
+    window::{PresentMode, WindowMode},
+};
 use bevy_tweening::TweeningPlugin;
 use controls::Controls;
 use debug::Debug;
@@ -46,9 +49,10 @@ fn main() {
         .insert_resource(WindowDescriptor {
             width: HEIGHT * RESOLUTION,
             height: HEIGHT,
-            title: "Bevy Template".to_string(),
             present_mode: PresentMode::Fifo,
             resizable: false,
+            mode: WindowMode::Windowed,
+            position: WindowPosition::Centered(MonitorSelection::Number(0)),
             ..Default::default()
         })
         .insert_resource(AmbientLight {

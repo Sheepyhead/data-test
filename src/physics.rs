@@ -1,7 +1,6 @@
 use bevy::{prelude::*, render::camera::Projection};
 use bevy_rapier3d::{
     prelude::*,
-    render::RapierDebugRenderPlugin,
 };
 
 use crate::common::approx_equal;
@@ -11,7 +10,7 @@ pub struct Physics;
 impl Plugin for Physics {
     fn build(&self, app: &mut App) {
         app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-            .add_plugin(RapierDebugRenderPlugin::default())
+            // .add_plugin(RapierDebugRenderPlugin::default())
             .add_system_to_stage(CoreStage::First, update_under_cursor)
             .insert_resource(UnderCursor::default());
     }

@@ -25,6 +25,7 @@ use physics::Physics;
 use player::PlayerPlugin;
 use tiles::Tiles;
 
+mod camera;
 mod common;
 mod controls;
 mod custom_meshes;
@@ -58,6 +59,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(TweeningPlugin)
         // Internal plugins
+        .add_plugin(camera::CameraPlugin)
         .add_plugin(Controls)
         .add_plugin(Debug)
         .add_plugin(Movement)
@@ -65,15 +67,5 @@ fn main() {
         .add_plugin(PlayerPlugin)
         .add_plugin(Tiles)
         .add_plugin(GltfPlugin)
-        .add_startup_system(spawn_camera)
         .run();
-}
-
-fn spawn_camera(mut commands: Commands) {
-    let mut camera = Camera3dBundle::default();
-
-    camera.transform.translation = Vec3::splat(10.0);
-    camera.transform.look_at(Vec3::ZERO, Vec3::Y);
-
-    commands.spawn_bundle(camera);
 }

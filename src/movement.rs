@@ -28,6 +28,10 @@ pub fn move_towards_destination(
                 commands.entity(entity).remove::<Destination>();
                 commands.entity(**destination).despawn_recursive();
             } else {
+                moving.rotation = Quat::from_rotation_arc(
+                    Vec3::Z,
+                    full_movement.extend(0.0).xzy().normalize_or_zero(),
+                );
                 moving.translation += movement.extend(0.0).xzy();
             }
         } else {
@@ -37,4 +41,3 @@ pub fn move_towards_destination(
         }
     }
 }
-

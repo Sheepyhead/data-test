@@ -23,11 +23,13 @@ pub fn move_towards_destination(
             let full_movement = target - moving.translation.xz();
             let mut movement = full_movement.normalize_or_zero() * time.delta_seconds() * 5.0;
             movement = movement.clamp_length_max(full_movement.length());
-            if movement == Vec2::ZERO {
+            if movement.length() <= f32::EPSILON {
                 // Reached destination, remove everything
+                info!("Movement done!");
                 commands.entity(entity).remove::<Destination>();
                 commands.entity(**destination).despawn_recursive();
             } else {
+                info!("Moving {movement} towards {target}");
                 moving.rotation = Quat::from_rotation_arc(
                     Vec3::Z,
                     full_movement.extend(0.0).xzy().normalize_or_zero(),

@@ -23,6 +23,7 @@ use bevy_tweening::TweeningPlugin;
 use character::Character;
 use controls::Controls;
 use debug::Debug;
+use enemy::EnemyPlugin;
 use gltf::GltfPlugin;
 use movement::Movement;
 use physics::Physics;
@@ -35,6 +36,7 @@ mod common;
 mod controls;
 mod custom_meshes;
 mod debug;
+mod enemy;
 mod gltf;
 mod movement;
 mod physics;
@@ -69,6 +71,7 @@ fn main() {
         .add_plugin(Character)
         .add_plugin(Controls)
         .add_plugin(Debug)
+        .add_plugin(EnemyPlugin)
         .add_plugin(Movement)
         .add_plugin(Physics)
         .add_plugin(PlayerPlugin)

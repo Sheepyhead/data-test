@@ -4,38 +4,38 @@ use bevy_rapier3d::prelude::*;
 
 use crate::character::{CharacterAnimationState, CharacterAnimations, CharacterBundle};
 
-pub struct PlayerPlugin;
+pub struct EnemyPlugin;
 
-impl Plugin for PlayerPlugin {
+impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugin(YamlAssetPlugin::<PlayerData>::new(&["player"]))
+        app.add_plugin(YamlAssetPlugin::<EnemyData>::new(&["enemy"]))
             .add_startup_system(load)
             .add_system(spawn);
     }
 }
 
 #[derive(Component, Deref)]
-struct SpawnPlayer(Handle<PlayerData>);
+struct SpawnEnemy(Handle<EnemyData>);
 
 fn load(mut commands: Commands, ass: Res<AssetServer>) {
-    let data = ass.load("archer.player");
-    commands.spawn_bundle((SpawnPlayer(data),));
+    let data = ass.load("enemy.enemy");
+    commands.spawn_bundle((SpawnEnemy(data),));
 }
 
 fn spawn(
     mut commands: Commands,
     ass: Res<AssetServer>,
-    spawns: Query<(Entity, &SpawnPlayer)>,
-    data: Res<Assets<PlayerData>>,
+    spawns: Query<(Entity, &SpawnEnemy)>,
+    data: Res<Assets<EnemyData>>,
 ) {
     for (entity, spawn) in spawns.iter() {
         if let Some(data) = data.get(&**spawn) {
             commands.entity(entity).despawn_recursive();
             commands
-                .spawn_bundle(PlayerBundle {
+                .spawn_bundle(EnemyBundle {
                     character: CharacterBundle {
                         spatial: SpatialBundle {
-                            transform: Transform::from_xyz(0.0, 1.1, 0.0),
+                            transform: Transform::from_xyz(10.0, 1.1, 10.0),
                             ..default()
                         },
                         scene: ass.load(&data.model).into(),
@@ -48,28 +48,28 @@ fn spawn(
                         rb: RigidBody::Dynamic,
                     },
                     la: LockedAxes::TRANSLATION_LOCKED_Y | LockedAxes::ROTATION_LOCKED,
-                    player: Player,
+                    enemy: Enemy,
                 })
-                .insert(Velocity::default());
+                .insert_bundle((Velocity::default(), Dominance::group(1)));
         }
     }
 }
 
 #[derive(serde::Deserialize, TypeUuid)]
-#[uuid = "a3b4779e-4090-434d-bf69-0ed5b3068e76"]
-struct PlayerData {
+#[uuid = "49c74e8a-06c3-4737-84bd-fac68b7f4469"]
+struct EnemyData {
     model: String,
     idle_animation: String,
     run_animation: String,
 }
 
 #[derive(Bundle)]
-struct PlayerBundle {
+struct EnemyBundle {
     #[bundle]
     character: CharacterBundle,
     la: LockedAxes,
-    player: Player,
+    enemy: Enemy,
 }
 
 #[derive(Component)]
-pub struct Player;
+pub struct Enemy;

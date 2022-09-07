@@ -1,7 +1,5 @@
 use bevy::{prelude::*, render::camera::Projection};
-use bevy_rapier3d::{
-    prelude::*,
-};
+use bevy_rapier3d::prelude::*;
 
 use crate::common::approx_equal;
 
@@ -12,6 +10,7 @@ impl Plugin for Physics {
         app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             // .add_plugin(RapierDebugRenderPlugin::default())
             .add_system_to_stage(CoreStage::First, update_under_cursor)
+            .add_system(reset_vel)
             .insert_resource(UnderCursor::default());
     }
 }
@@ -40,8 +39,14 @@ fn update_under_cursor(
             Projection::Perspective(persp) => persp,
             Projection::Orthographic(_) => panic!(),
         };
-        let (from, to) =
-            ray_from_screenspace(cursor_pos_screen, &windows, camera, projection, camera_transform, 100.0);
+        let (from, to) = ray_from_screenspace(
+            cursor_pos_screen,
+            &windows,
+            camera,
+            projection,
+            camera_transform,
+            100.0,
+        );
 
         if let Some((hit, RayIntersection { point, .. })) = context.cast_ray_and_get_normal(
             from,
@@ -59,7 +64,6 @@ fn update_under_cursor(
         }
     }
 }
-
 
 pub fn ray_from_screenspace(
     cursor_pos_screen: Vec2,
@@ -92,4 +96,12 @@ pub fn ray_from_screenspace(
     };
 
     (cursor_pos_near, ray_direction * length)
+}
+
+// Workaround to prevent characters slipping and sliding after collision
+fn reset_vel(mut player: Query<&mut Velocity>) {
+    for mut player in player.iter_mut() {
+        player.linvel = Vec3::ZERO;
+        player.angvel = Vec3::ZERO;
+    }
 }

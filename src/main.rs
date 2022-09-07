@@ -20,6 +20,7 @@ use bevy::{
     window::{PresentMode, WindowMode},
 };
 use bevy_tweening::TweeningPlugin;
+use character::Character;
 use controls::Controls;
 use debug::Debug;
 use gltf::GltfPlugin;
@@ -29,6 +30,7 @@ use player::PlayerPlugin;
 use tiles::Tiles;
 
 mod camera;
+mod character;
 mod common;
 mod controls;
 mod custom_meshes;
@@ -64,6 +66,7 @@ fn main() {
         .add_plugin(TweeningPlugin)
         // Internal plugins
         .add_plugin(camera::CameraPlugin)
+        .add_plugin(Character)
         .add_plugin(Controls)
         .add_plugin(Debug)
         .add_plugin(Movement)

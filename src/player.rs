@@ -2,7 +2,10 @@ use bevy::{prelude::*, reflect::TypeUuid};
 use bevy_common_assets::yaml::YamlAssetPlugin;
 use bevy_rapier3d::prelude::*;
 
-use crate::{gltf::SpawnGltfScene, character::{CharacterAnimations, CharacterAnimationState}};
+use crate::{
+    character::{CharacterAnimationState, CharacterAnimations, CharacterBundle},
+    gltf::SpawnGltfScene,
+};
 
 pub struct PlayerPlugin;
 
@@ -32,18 +35,20 @@ fn spawn(
         if let Some(data) = data.get(&**spawn) {
             commands.entity(entity).despawn_recursive();
             commands.spawn_bundle(PlayerBundle {
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 1.1, 0.0),
-                    ..default()
+                character: CharacterBundle {
+                    spatial: SpatialBundle {
+                        transform: Transform::from_xyz(0.0, 1.1, 0.0),
+                        ..default()
+                    },
+                    scene: ass.load(&data.model).into(),
+                    animations: CharacterAnimations {
+                        idle: ass.load(&format!("{}#Animation0", data.idle_animation)),
+                        run: ass.load(&format!("{}#Animation0", data.run_animation)),
+                    },
+                    animation_state: CharacterAnimationState::Idle,
+                    collider: Collider::cylinder(1.0, 0.5),
+                    rb: RigidBody::Dynamic,
                 },
-                scene: ass.load(&data.model).into(),
-                animations: CharacterAnimations {
-                    idle: ass.load(&format!("{}#Animation0", data.idle_animation)),
-                    run: ass.load(&format!("{}#Animation0", data.run_animation)),
-                },
-                animation_state: CharacterAnimationState::Idle,
-                collider: Collider::cylinder(1.0, 0.5),
-                rb: RigidBody::Dynamic,
                 la: LockedAxes::TRANSLATION_LOCKED_Y | LockedAxes::ROTATION_LOCKED,
                 player: Player,
             });
@@ -62,12 +67,7 @@ struct PlayerData {
 #[derive(Bundle)]
 struct PlayerBundle {
     #[bundle]
-    spatial: SpatialBundle,
-    scene: SpawnGltfScene,
-    animations: CharacterAnimations,
-    animation_state: CharacterAnimationState,
-    collider: Collider,
-    rb: RigidBody,
+    character: CharacterBundle,
     la: LockedAxes,
     player: Player,
 }

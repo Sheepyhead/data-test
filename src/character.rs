@@ -1,6 +1,7 @@
 use bevy::prelude::*;
+use bevy_rapier3d::prelude::{Collider, RigidBody};
 
-use crate::movement::Destination;
+use crate::{gltf::SpawnGltfScene, movement::Destination};
 
 pub struct Character;
 
@@ -104,4 +105,15 @@ impl CharacterAnimations {
 pub enum CharacterAnimationState {
     Idle,
     Running,
+}
+
+#[derive(Bundle)]
+pub struct CharacterBundle {
+    #[bundle]
+    pub spatial: SpatialBundle,
+    pub scene: SpawnGltfScene,
+    pub animations: CharacterAnimations,
+    pub animation_state: CharacterAnimationState,
+    pub collider: Collider,
+    pub rb: RigidBody,
 }

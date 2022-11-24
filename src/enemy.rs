@@ -19,7 +19,7 @@ struct SpawnEnemy(Handle<EnemyData>);
 
 fn load(mut commands: Commands, ass: Res<AssetServer>) {
     let data = ass.load("enemy.enemy");
-    commands.spawn_bundle((SpawnEnemy(data),));
+    commands.spawn((SpawnEnemy(data),));
 }
 
 fn spawn(
@@ -32,7 +32,7 @@ fn spawn(
         if let Some(data) = data.get(&**spawn) {
             commands.entity(entity).despawn_recursive();
             commands
-                .spawn_bundle(EnemyBundle {
+                .spawn(EnemyBundle {
                     character: CharacterBundle {
                         spatial: SpatialBundle {
                             transform: Transform::from_xyz(10.0, 1.1, 10.0),
@@ -50,7 +50,7 @@ fn spawn(
                     la: LockedAxes::TRANSLATION_LOCKED_Y | LockedAxes::ROTATION_LOCKED,
                     enemy: Enemy,
                 })
-                .insert_bundle((Velocity::default(), Dominance::group(1)));
+                .insert((Velocity::default(), Dominance::group(1)));
         }
     }
 }

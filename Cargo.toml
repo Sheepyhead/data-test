@@ -6,12 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.8"
-bevy-inspector-egui = "0.12"
-bevy_common_assets = {version = "0.3.0", features = ["yaml"]}
+bevy = "0.9"
+bevy-inspector-egui = "0.14"
+bevy_common_assets = {version = "0.4", features = ["yaml"]}
 serde = { version = "1", features = ["derive"] }
-bevy_rapier3d = "0.16"
-bevy_tweening = "0.5.0"
+bevy_rapier3d = "0.19"
+bevy_tweening = "0.6"
 
 [profile.dev]
 opt-level = 1

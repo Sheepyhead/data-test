@@ -15,7 +15,7 @@ impl Plugin for Physics {
     }
 }
 
-#[derive(Default, Deref, DerefMut)]
+#[derive(Default, Deref, DerefMut, Resource)]
 pub struct UnderCursor(pub Option<Collision>);
 
 #[derive(Debug)]
@@ -75,7 +75,7 @@ pub fn ray_from_screenspace(
 ) -> (Vec3, Vec3) {
     let view = camera_transform.compute_matrix();
     let window = windows.get_primary().unwrap();
-    let screen_size = Vec2::from([window.width() as f32, window.height() as f32]);
+    let screen_size = Vec2::from([window.width(), window.height()]);
     let projection = camera.projection_matrix();
 
     // 2D Normalized device coordinate cursor position from (-1, -1) to (1, 1)

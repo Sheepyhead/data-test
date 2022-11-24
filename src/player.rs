@@ -19,7 +19,7 @@ struct SpawnPlayer(Handle<PlayerData>);
 
 fn load(mut commands: Commands, ass: Res<AssetServer>) {
     let data = ass.load("archer.player");
-    commands.spawn_bundle((SpawnPlayer(data),));
+    commands.spawn((SpawnPlayer(data),));
 }
 
 fn spawn(
@@ -32,7 +32,7 @@ fn spawn(
         if let Some(data) = data.get(&**spawn) {
             commands.entity(entity).despawn_recursive();
             commands
-                .spawn_bundle(PlayerBundle {
+                .spawn(PlayerBundle {
                     character: CharacterBundle {
                         spatial: SpatialBundle {
                             transform: Transform::from_xyz(0.0, 1.1, 0.0),

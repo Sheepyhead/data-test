@@ -15,7 +15,7 @@ impl Plugin for CameraPlugin {
     }
 }
 
-#[derive(Deref, DerefMut)]
+#[derive(Deref, DerefMut, Resource)]
 pub struct CameraOffset(Vec3);
 
 impl From<Vec3> for CameraOffset {
@@ -30,7 +30,7 @@ fn spawn_camera(mut commands: Commands, offset: Res<CameraOffset>) {
     camera.transform.translation = **offset;
     camera.transform.look_at(Vec3::ZERO, Vec3::Y);
 
-    commands.spawn_bundle(camera);
+    commands.spawn(camera);
 }
 
 fn follow_player(

@@ -40,7 +40,7 @@ fn click_ground(
             let angles = transform.rotation.to_euler(EulerRot::XYZ);
             let end_rotation = Quat::from_euler(EulerRot::XYZ, angles.0, angles.1 + PI, angles.2);
             let destination = commands
-                .spawn_bundle(PbrBundle {
+                .spawn(PbrBundle {
                     mesh: meshes.add(
                         Pyramid {
                             base_side_length: 0.25,
@@ -52,10 +52,10 @@ fn click_ground(
                     transform,
                     ..default()
                 })
-                .insert_bundle((
+                .insert((
                     Animator::new(Tween::new(
                         EaseFunction::CircularInOut,
-                        bevy_tweening::TweeningType::PingPong,
+                        // bevy_tweening::TweeningType::PingPong,
                         Duration::from_secs_f32(0.5),
                         TransformRotationLens {
                             start: transform.rotation,
@@ -70,7 +70,9 @@ fn click_ground(
                 .iter()
                 .for_each(|entity| commands.entity(entity).despawn_recursive());
 
-            commands.entity(player.single()).insert(Destination(destination));
+            commands
+                .entity(player.single())
+                .insert(Destination(destination));
         }
     }
 }

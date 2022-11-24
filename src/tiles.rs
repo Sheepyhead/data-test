@@ -13,6 +13,8 @@ impl Plugin for Tiles {
             .add_system(spawn_tileset);
     }
 }
+
+#[derive(Resource)]
 struct TileSets(Vec<Handle<RepeatingTileSet>>);
 
 fn load(mut commands: Commands, ass: Res<AssetServer>) {

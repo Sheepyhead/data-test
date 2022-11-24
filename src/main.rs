@@ -50,21 +50,24 @@ pub const RESOLUTION: f32 = 16.0 / 9.0;
 fn main() {
     App::new()
         .insert_resource(ClearColor(CLEAR))
-        .insert_resource(WindowDescriptor {
-            width: HEIGHT * RESOLUTION,
-            height: HEIGHT,
-            present_mode: PresentMode::Fifo,
-            resizable: false,
-            mode: WindowMode::Windowed,
-            position: WindowPosition::Centered(MonitorSelection::Number(0)),
-            ..Default::default()
-        })
         .insert_resource(AmbientLight {
             color: Color::WHITE,
             brightness: 0.7,
         })
         // External plugins
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            window: WindowDescriptor {
+                width: HEIGHT * RESOLUTION,
+                height: HEIGHT,
+                present_mode: PresentMode::Fifo,
+                resizable: false,
+                mode: WindowMode::Windowed,
+                position: WindowPosition::Centered,
+                monitor: MonitorSelection::Index(0),
+                ..default()
+            },
+            ..default()
+        }))
         .add_plugin(TweeningPlugin)
         // Internal plugins
         .add_plugin(camera::CameraPlugin)

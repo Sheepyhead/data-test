@@ -31,9 +31,10 @@ fn update_under_cursor(
     camera: Query<(&bevy::prelude::Camera, &GlobalTransform, &Projection), With<Camera3d>>,
 ) {
     if let Some(cursor_pos_screen) = windows.get_primary().and_then(Window::cursor_position) {
-        let (camera, camera_transform, projection) = match camera.get_single() {
-            Ok(data) => data,
-            Err(_) => return,
+        let (camera, camera_transform, projection) = if let Ok(data) = camera.get_single() {
+            data
+        } else {
+            return;
         };
         let projection = match projection {
             Projection::Perspective(persp) => persp,

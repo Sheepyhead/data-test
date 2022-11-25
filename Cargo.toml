@@ -12,6 +12,7 @@ bevy_common_assets = {version = "0.4", features = ["yaml"]}
 serde = { version = "1", features = ["derive"] }
 bevy_rapier3d = "0.19"
 bevy_tweening = "0.6"
+bevy_egui = "0.17"
 
 [profile.dev]
 opt-level = 1

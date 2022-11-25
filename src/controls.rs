@@ -78,4 +78,4 @@ fn click_ground(
 }
 
 #[derive(Component)]
-struct PlayerDestinationIndicator;
+pub struct PlayerDestinationIndicator;
